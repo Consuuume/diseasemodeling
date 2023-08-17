@@ -24,8 +24,7 @@
   }
 
   onMount(() => {
-    const randomPerson = persons[Math.floor(Math.random() * persons.length)];
-    randomPerson.infect();
+    reset();
   });
 </script>
     
