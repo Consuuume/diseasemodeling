@@ -1,7 +1,3 @@
-<script>
-// @ts-nocheck
-</script>
-
 <nav>
   <a href="/">Home</a>
   <a href="basicInfection">Basic Infection</a>

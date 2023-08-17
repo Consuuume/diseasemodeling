@@ -1,6 +1,4 @@
 <script>
-// @ts-nocheck
-
     export let startingHealthyCount = 0;
     export let startingSickCount = 0;
     import { infectedCount } from '../stores/infectedCount.js'

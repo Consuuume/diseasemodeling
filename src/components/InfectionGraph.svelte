@@ -1,5 +1,4 @@
-<script>
-// @ts-nocheck
+<script lang="ts">
     import { afterUpdate, onMount } from 'svelte';
     import * as d3 from 'd3';
     import { infectedData } from '../stores/infectedData';
@@ -9,9 +8,9 @@
     let height = 200 - margin.top - margin.bottom;
 
     let svg;
-    let x;
-    let y;
-    let path;
+    let x: d3.ScaleLinear<number, number, never> | { (arg0: any): number; domain: (arg0: [any, any]) => void; };
+    let y: d3.ScaleLinear<number, number, never> | { (arg0: any): number; domain: (arg0: any[]) => void; };
+    let path: d3.Selection<SVGPathElement, never[], HTMLElement, any>;
 
     function setupGraph() {
         svg = d3.select('#graph-container')

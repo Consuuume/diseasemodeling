@@ -1,5 +1,4 @@
-<script>
-// @ts-nocheck
+<script lang="ts">
     export let isSick = false;
     export function reset() {
         isSick = false;
@@ -23,9 +22,9 @@
     let diseaseRadius = 20;
     const speed = 5;
 
-    let circleElement;
+    let circleElement:any;
     let svg;
-    let interval;
+    let interval:any;
 
     function setRandomPosition() {
         x = Math.random() * 800;
@@ -50,8 +49,8 @@
         if (!isSick) {
             document.querySelectorAll('.person-circle').forEach(otherCircle => {
                 if (otherCircle !== circleElement) {
-                    const otherX = +otherCircle.getAttribute('cx');
-                    const otherY = +otherCircle.getAttribute('cy');
+                    const otherX = parseFloat(otherCircle.getAttribute('cx') ?? '0');
+                    const otherY = parseFloat(otherCircle.getAttribute('cy') ?? '0');
                     const distance = Math.sqrt(Math.pow(x - otherX, 2) + Math.pow(y - otherY, 2));
 
                     if (distance < diseaseRadius && otherCircle.classList.contains('sick')) {
