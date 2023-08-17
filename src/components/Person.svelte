@@ -4,6 +4,7 @@
     
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import { infectedCount } from '../stores/infectedCount.js';
 
     let x = 0;
     let y = 0;
@@ -44,6 +45,7 @@
                     if (distance < diseaseRadius && otherCircle.classList.contains('sick')) {
                         isSick = true;
                         circleElement.setAttribute('class', 'person-circle sick');
+                        infectedCount.update(n => n + 1); 
                     }
                 }
             });

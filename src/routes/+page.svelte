@@ -1,5 +1,12 @@
 <script>
   import Person from '../components/Person.svelte';
+  import InfectedCount from '../components/InfectedCount.svelte';
+	import { onMount } from 'svelte';
+
+
+  let startingNumHealthyPeople = 1000;
+  let startingNumInfectedPeople = 1;
+  
 </script>
 
 <style>
@@ -12,9 +19,14 @@
 </style>
 
 <div id="simulation-container">
-  {#each Array(1000) as _, i}
+  {#each Array(startingNumHealthyPeople) as _, i}
     <Person />
   {/each}
-  <Person isSick={true} />
+  {#each Array(startingNumInfectedPeople) as _, i}
+    <Person isSick={true} />
+  {/each}
   
+</div>
+<div>
+  <InfectedCount startingHealthyCount={startingNumHealthyPeople} startingSickCount={startingNumInfectedPeople} />
 </div>
