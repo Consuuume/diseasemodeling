@@ -1,12 +1,30 @@
 <script>
+// @ts-nocheck
+
   import Person from '../components/Person.svelte';
   import InfectedCount from '../components/InfectedCount.svelte';
 	import { onMount } from 'svelte';
+	import { resetInfectedCount } from '../stores/infectedCount';
 
 
-  let startingNumHealthyPeople = 1000;
-  let startingNumInfectedPeople = 1;
+  let numPeople = 1000;
+  let numStartingInfected = 1;
+  let persons = [];
   
+  const reset = () => {
+    resetInfectedCount();
+    persons.forEach(person => {
+        person.reset();
+    });
+    const randomPerson = persons[Math.floor(Math.random() * persons.length)];
+    randomPerson.infect();
+  }
+
+  onMount(() => {
+    const randomPerson = persons[Math.floor(Math.random() * persons.length)];
+    randomPerson.infect();
+  });
+
 </script>
 
 <style>
@@ -19,14 +37,12 @@
 </style>
 
 <div id="simulation-container">
-  {#each Array(startingNumHealthyPeople) as _, i}
-    <Person />
-  {/each}
-  {#each Array(startingNumInfectedPeople) as _, i}
-    <Person isSick={true} />
+  {#each Array(numPeople) as _, i}
+    <Person bind:this={persons[i]} />
   {/each}
   
 </div>
 <div>
-  <InfectedCount startingHealthyCount={startingNumHealthyPeople} startingSickCount={startingNumInfectedPeople} />
+  <InfectedCount startingHealthyCount={numPeople} startingSickCount={numStartingInfected} />
 </div>
+<button on:click={reset}>Reset</button>

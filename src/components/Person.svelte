@@ -1,6 +1,16 @@
 <script>
 // @ts-nocheck
     export let isSick = false;
+    export function reset() {
+        isSick = false;
+        circleElement.setAttribute('class', 'person-circle');
+        setRandomPosition();
+    }
+    export function infect() {
+        isSick = true;
+        circleElement.setAttribute('class', 'person-circle sick');
+        infectedCount.update(n => n + 1);
+    }
     
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -13,7 +23,7 @@
 
     let circleElement;
     let svg;
-    
+
     function setRandomPosition() {
         x = Math.random() * 800;
         y = Math.random() * 600;
@@ -31,8 +41,8 @@
             .attr('cx', x)
             .attr('cy', y);
         
-        circleElement.setAttribute('cx', x);
-        circleElement.setAttribute('cy', y);
+        circleElement?.setAttribute('cx', x);
+        circleElement?.setAttribute('cy', y);
 
         if (!isSick) {
             // Loop through all other Person components on the page
@@ -43,9 +53,7 @@
                     const distance = Math.sqrt(Math.pow(x - otherX, 2) + Math.pow(y - otherY, 2));
 
                     if (distance < diseaseRadius && otherCircle.classList.contains('sick')) {
-                        isSick = true;
-                        circleElement.setAttribute('class', 'person-circle sick');
-                        infectedCount.update(n => n + 1); 
+                        infect(); 
                     }
                 }
             });
