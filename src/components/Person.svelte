@@ -13,7 +13,7 @@
         infectedData.push({ time: new Date(), count: $infectedCount });
     }
     
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import { infectedCount } from '../stores/infectedCount.js';
     import { infectedData } from '../stores/infectedData.js';
@@ -25,6 +25,7 @@
 
     let circleElement;
     let svg;
+    let interval;
 
     function setRandomPosition() {
         x = Math.random() * 800;
@@ -66,7 +67,11 @@
         if (isSick) {
             circleElement.setAttribute('class', 'person-circle sick');
         }
-        setInterval(updatePosition, 100);
+        interval = setInterval(updatePosition, 100);
+    });
+
+    onDestroy(() => {
+        clearInterval(interval);
     });
 </script>
 
