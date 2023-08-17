@@ -1,7 +1,5 @@
 <script>
 // @ts-nocheck
-
-    export let startTime = null; 
     import { afterUpdate, onMount } from 'svelte';
     import * as d3 from 'd3';
     import { infectedData } from '../stores/infectedData';
@@ -20,6 +18,7 @@
             .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
+            .style("border", "2px solid steelblue")
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -37,6 +36,21 @@
                 .x(d => x(d.time))
                 .y(d => y(d.count))
             );
+
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height - 6)
+            .text("TIME");
+
+        svg.append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("y", 6)
+            .attr("dy", "-1em")
+            .attr("transform", "rotate(-90)")
+            .text("Infected People");
     }
 
     function updateGraph() {

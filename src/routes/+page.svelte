@@ -50,5 +50,5 @@
   <InfectedCount startingHealthyCount={numPeople} startingSickCount={numStartingInfected} />
 </div>
 
-<InfectionGraph startTime={startTime} />
+<InfectionGraph />
 <button on:click={reset}>Reset</button>
