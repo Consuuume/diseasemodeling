@@ -9,12 +9,14 @@
     export function infect() {
         isSick = true;
         circleElement.setAttribute('class', 'person-circle sick');
-        infectedCount.update(n => n + 1);
+        infectedCount.increment();
+        infectedData.push({ time: new Date(), count: $infectedCount });
     }
     
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { infectedCount } from '../stores/infectedCount.js';
+    import { infectedData } from '../stores/infectedData.js';
 
     let x = 0;
     let y = 0;
@@ -45,7 +47,6 @@
         circleElement?.setAttribute('cy', y);
 
         if (!isSick) {
-            // Loop through all other Person components on the page
             document.querySelectorAll('.person-circle').forEach(otherCircle => {
                 if (otherCircle !== circleElement) {
                     const otherX = +otherCircle.getAttribute('cx');

@@ -4,19 +4,24 @@
   import Person from '../components/Person.svelte';
   import InfectedCount from '../components/InfectedCount.svelte';
 	import { onMount } from 'svelte';
-	import { resetInfectedCount } from '../stores/infectedCount';
+	import { infectedCount } from '../stores/infectedCount';
+  import { infectedData } from '../stores/infectedData';
+  import InfectionGraph from '../components/InfectionGraph.svelte';
 
 
   let numPeople = 1000;
   let numStartingInfected = 1;
   let persons = [];
+  let startTime = new Date();
   
   const reset = () => {
-    resetInfectedCount();
+    infectedData.reset();
+    infectedCount.reset();
     persons.forEach(person => {
         person.reset();
     });
     const randomPerson = persons[Math.floor(Math.random() * persons.length)];
+    startTime = new Date();
     randomPerson.infect();
   }
 
@@ -24,7 +29,6 @@
     const randomPerson = persons[Math.floor(Math.random() * persons.length)];
     randomPerson.infect();
   });
-
 </script>
 
 <style>
@@ -45,4 +49,6 @@
 <div>
   <InfectedCount startingHealthyCount={numPeople} startingSickCount={numStartingInfected} />
 </div>
+
+<InfectionGraph startTime={startTime} />
 <button on:click={reset}>Reset</button>
