@@ -1,7 +1,7 @@
 <script lang="ts">
     export let xMax:number=800;
     export let yMax:number=600;
-    export let transmissability:number = 1;
+    export let transmissibility:number = 1;
     export let detectability:number = 0;
     export let speed:number = 30;
     export let isSick:boolean = false;
@@ -102,7 +102,7 @@
                 const otherX = parseFloat(otherCircle.getAttribute('cx') ?? "100000000000000000000000000");
                 const otherY = parseFloat(otherCircle.getAttribute('cy') ?? "100000000000000000000000000");
                 const distanceSquared = Math.pow(x - otherX, 2) + Math.pow(y - otherY, 2);
-                const willCatch = Math.random() <= transmissability;
+                const willCatch = Math.random() <= transmissibility;
                 if (distanceSquared < diseaseRadiusSquared && willCatch) {
                     infect();
                     break;

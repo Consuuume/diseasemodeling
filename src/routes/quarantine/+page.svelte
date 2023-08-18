@@ -6,21 +6,33 @@
   import { infectedData } from '../../stores/infectedData';
   import InfectionGraph from '../../components/InfectionGraph.svelte';
 	import Nav from '../../components/Nav.svelte';
-	import PopulationSlider from '../../components/PopulationSlider.svelte';
   import PersonRoutine from '../../classes/PersonRoutine';  
 	import { quarantineZoneLocation } from '../../stores/quarantineZoneLocation';
+	import LabeledSlider from '../../components/LabeledSlider.svelte';
+	import { diseaseInformation } from '../../stores/diseaseInformation';
 
   let container:any;
   let numPeople = 500;
   let persons: Person[] = [];
 
   let numPeopleSliderValue:number = 500;
+  let transmissabilitySliderValue: number = 0.01;
+  let detectabilitySliderValue: number = 0.01;
   
   let locations: [number, number][] = [];
+
+  const { transmissibility, detectability } = diseaseInformation;
   
-  const reset = () => {
+  const resetStores = () => {
     quarantineZoneLocation.zoneX.set(800);
     quarantineZoneLocation.zoneY.set(600);
+    diseaseInformation.transmissibility.set(transmissabilitySliderValue);
+    diseaseInformation.detectability.set(detectabilitySliderValue);
+  }
+
+  const reset = () => {
+    resetStores();
+
     for (let index = 0; index < 10; index++) {
       locations.push([Math.floor(Math.random() * 600), Math.floor(Math.random() * 450)]) 
     }
@@ -39,10 +51,10 @@
           isSick: false, 
           routine:new PersonRoutine(randomLocations), 
           speed: 10, 
-          transmissability: 0.01, 
+          transmissibility: $transmissibility, 
           xMax: 600, 
           yMax: 450, 
-          detectability: 0.01}
+          detectability: $detectability}
       });
       persons.push(person);
     }
@@ -83,6 +95,8 @@
 
 <div class="setup">
   <h2>Setup</h2>
-  <PopulationSlider bind:numPeopleSliderValue={numPeopleSliderValue} />
+  <LabeledSlider label={"Number of People: "} bind:sliderValue={numPeopleSliderValue} />
+  <LabeledSlider label={"Disease Transmissibility: "} bind:sliderValue={transmissabilitySliderValue} min={0} max={1} step={0.001} />
+  <LabeledSlider label={"Disease Detectability: "} bind:sliderValue={detectabilitySliderValue} min={0} max={1} step={0.001} />
   <button on:click={reset}>Reset</button>
 </div>

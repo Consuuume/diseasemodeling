@@ -6,7 +6,7 @@
   import { infectedData } from '../../stores/infectedData';
   import InfectionGraph from '../../components/InfectionGraph.svelte';
 	import Nav from '../../components/Nav.svelte';
-	import PopulationSlider from '../../components/PopulationSlider.svelte';
+	import LabeledSlider from '../../components/LabeledSlider.svelte';
     
 
   let container:any;
@@ -65,6 +65,6 @@
 
 <div class="setup">
   <h2>Setup</h2>
-  <PopulationSlider bind:numPeopleSliderValue={numPeopleSliderValue} />
+  <LabeledSlider label={"Number of People: "} bind:sliderValue={numPeopleSliderValue} />
   <button on:click={reset}>Reset</button>
 </div>
