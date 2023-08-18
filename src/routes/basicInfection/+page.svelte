@@ -6,7 +6,7 @@
   import { infectedData } from '../../stores/infectedData';
   import InfectionGraph from '../../components/InfectionGraph.svelte';
 	import Nav from '../../components/Nav.svelte';
-  import { Slider } from 'fluent-svelte'
+	import PopulationSlider from '../../components/PopulationSlider.svelte';
     
 
   let container:any;
@@ -50,10 +50,6 @@
     border: 1px solid #ccc;
     position: relative;
   }
-
-  .numPeopleSection {
-    width: 40%;
-  }
 </style>
 
 <Nav />
@@ -70,9 +66,6 @@
 
 <div class="setup">
   <h2>Setup</h2>
-  <div class="numPeopleSection">
-    Number of People: {numPeopleSliderValue}
-    <Slider bind:value={numPeopleSliderValue} min={10} max={1000} />
-  </div>
+  <PopulationSlider bind:numPeopleSliderValue={numPeopleSliderValue} />
   <button on:click={reset}>Reset</button>
 </div>
