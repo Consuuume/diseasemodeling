@@ -7,14 +7,19 @@
   import InfectionGraph from '../../components/InfectionGraph.svelte';
 	import Nav from '../../components/Nav.svelte';
 	import PopulationSlider from '../../components/PopulationSlider.svelte';
-    
+  import PersonRoutine from '../../classes/PersonRoutine';  
 
   let container:any;
   let numPeople = 500;
   let persons: Person[] = [];
 
   let numPeopleSliderValue:number = 500;
-    
+  
+  let locations: [number, number][] = [];
+  for (let index = 0; index < 10; index++) {
+    locations.push([Math.floor(Math.random() * 800), Math.floor(Math.random() * 600)]) 
+  }
+
   const reset = () => {
     numPeople = numPeopleSliderValue;
     persons.forEach(p => {
@@ -22,11 +27,14 @@
     });
     persons = [];
     for (let i = 0; i < numPeople; i++) {
-        const person = new Person({
-          target: container,
-          props: {isSick: false}
-        });
-        persons.push(person);
+      // Shuffle array
+      const shuffled = locations.sort(() => 0.5 - Math.random());
+      let randomLocations = shuffled.slice(0, 3);
+      const person = new Person({
+        target: container,
+        props: {isSick: false, routine:new PersonRoutine(randomLocations), speed: 10, transmissability: 0.01}
+      });
+      persons.push(person);
     }
     infectedData.reset();
     infectedCount.reset();

@@ -1,5 +1,8 @@
 <script lang="ts">
+    export let transmissability:number = 1;
+    export let speed:number = 30;
     export let isSick:boolean = false;
+    export let routine:PersonRoutine | undefined = undefined;
     export function reset() {
         isSick = false;
         circleElement.setAttribute('class', 'person-circle');
@@ -16,12 +19,12 @@
     import * as d3 from 'd3';
     import { infectedCount } from '../stores/infectedCount.js';
     import { infectedData } from '../stores/infectedData.js';
+	import type PersonRoutine from '../classes/PersonRoutine.js';
 
     let x = 0;
     let y = 0;
     const diseaseRadius:number = 20;
     const diseaseRadiusSquared:number = Math.pow(diseaseRadius, 2);
-    const speed = 30;
 
     let circleElement:any;
     let svg;
@@ -32,20 +35,46 @@
         y = Math.random() * 600;
     }
 
-    function updatePosition() {
+    function moveInBounds(moveX:number, moveY:number) {
+        // Stay within bounds
+        x = Math.max(0, Math.min(800, moveX));
+        y = Math.max(0, Math.min(600, moveY)); 
+    }
+
+    function moveThroughRoutine(x:number, y:number) {
+        if (!routine || !circleElement) return;
+
+        let toDestination = routine.getDirectionsToNextDestination(x, y);
+        if (!toDestination) return;
+
+        let mag = Math.sqrt(Math.pow(toDestination[0], 2) + Math.pow(toDestination[1], 2));
+        if (mag === 0) return;
+        let normalized = [toDestination[0] / mag, toDestination[1] / mag];
+        
+        let moveVec:[number, number] = [+x + normalized[0] * speed, +y + normalized[1] * speed]
+        
+        if (isNaN(Math.round(moveVec[0]))) debugger;
+        moveInBounds(Math.round(moveVec[0]), Math.round(moveVec[1]));
+        if (mag <= speed*2) {
+            routine.destinationReached();
+        }
+        
+    }
+
+    function moveRandomly() {
         const newX = x + (Math.random() - 0.5) * speed;
         const newY = y + (Math.random() - 0.5) * speed;
 
-        // Stay within bounds
-        x = Math.max(0, Math.min(800, newX));
-        y = Math.max(0, Math.min(600, newY)); 
+        moveInBounds(newX, newY);
+    }
 
-        d3.select(circleElement)
-            .attr('cx', x)
-            .attr('cy', y);
-        
-        circleElement?.setAttribute('cx', x);
-        circleElement?.setAttribute('cy', y);
+    function updatePosition() {
+        if (routine && circleElement) {
+            moveThroughRoutine(circleElement.getAttribute('cx'), circleElement.getAttribute('cy'));
+        }
+        else {
+            moveRandomly();
+        }
 
         if (!isSick) {
             let sickPeople = document.querySelectorAll('.person-circle.sick');
@@ -53,8 +82,8 @@
                 const otherX = parseFloat(otherCircle.getAttribute('cx') ?? "100000000000000000000000000");
                 const otherY = parseFloat(otherCircle.getAttribute('cy') ?? "100000000000000000000000000");
                 const distanceSquared = Math.pow(x - otherX, 2) + Math.pow(y - otherY, 2);
-
-                if (distanceSquared < diseaseRadiusSquared) {
+                const willCatch = Math.random() <= transmissability;
+                if (distanceSquared < diseaseRadiusSquared && willCatch) {
                     infect();
                     break;
                 }
@@ -63,6 +92,7 @@
     }
 
     onMount(() => {
+
         setRandomPosition();
         if (isSick) {
             circleElement.setAttribute('class', 'person-circle sick');
