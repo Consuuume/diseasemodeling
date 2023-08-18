@@ -8,7 +8,6 @@
     
 
   let numPeople = 1000;
-  let numStartingInfected = 1;
   let persons:any[] = [];
   let startTime = new Date();
     
@@ -47,7 +46,7 @@
   
 </div>
 <div>
-  <InfectedCount startingHealthyCount={numPeople} startingSickCount={numStartingInfected} />
+  <InfectedCount startingHealthyCount={numPeople} />
 </div>
 
 <InfectionGraph />

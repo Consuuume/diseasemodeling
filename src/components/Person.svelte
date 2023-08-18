@@ -19,8 +19,9 @@
 
     let x = 0;
     let y = 0;
-    let diseaseRadius = 20;
-    const speed = 5;
+    const diseaseRadius:number = 20;
+    const diseaseRadiusSquared:number = Math.pow(diseaseRadius, 2);
+    const speed = 30;
 
     let circleElement:any;
     let svg;
@@ -47,17 +48,17 @@
         circleElement?.setAttribute('cy', y);
 
         if (!isSick) {
-            document.querySelectorAll('.person-circle').forEach(otherCircle => {
-                if (otherCircle !== circleElement) {
-                    const otherX = parseFloat(otherCircle.getAttribute('cx') ?? '0');
-                    const otherY = parseFloat(otherCircle.getAttribute('cy') ?? '0');
-                    const distance = Math.sqrt(Math.pow(x - otherX, 2) + Math.pow(y - otherY, 2));
+            let sickPeople = document.querySelectorAll('.person-circle.sick');
+            for(let otherCircle of sickPeople) {
+                const otherX = parseFloat(otherCircle.getAttribute('cx') ?? "100000000000000000000000000");
+                const otherY = parseFloat(otherCircle.getAttribute('cy') ?? "100000000000000000000000000");
+                const distanceSquared = Math.pow(x - otherX, 2) + Math.pow(y - otherY, 2);
 
-                    if (distance < diseaseRadius && otherCircle.classList.contains('sick')) {
-                        infect(); 
-                    }
+                if (distanceSquared < diseaseRadiusSquared) {
+                    infect();
+                    break;
                 }
-            });
+            };
         }
     }
 
