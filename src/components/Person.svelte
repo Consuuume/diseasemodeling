@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let isSick = false;
+    export let isSick:boolean = false;
     export function reset() {
         isSick = false;
         circleElement.setAttribute('class', 'person-circle');
