@@ -30,7 +30,6 @@
     }
     infectedData.reset();
     infectedCount.reset();
-    console.log("there are " + persons.length + " people now")
     persons?.forEach(person => {
         person?.reset();
     });
