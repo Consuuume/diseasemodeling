@@ -8,6 +8,7 @@
 	import Nav from '../../components/Nav.svelte';
 	import PopulationSlider from '../../components/PopulationSlider.svelte';
   import PersonRoutine from '../../classes/PersonRoutine';  
+	import { quarantineZoneLocation } from '../../stores/quarantineZoneLocation';
 
   let container:any;
   let numPeople = 500;
@@ -16,11 +17,13 @@
   let numPeopleSliderValue:number = 500;
   
   let locations: [number, number][] = [];
-  for (let index = 0; index < 10; index++) {
-    locations.push([Math.floor(Math.random() * 800), Math.floor(Math.random() * 600)]) 
-  }
-
+  
   const reset = () => {
+    quarantineZoneLocation.zoneX.set(800);
+    quarantineZoneLocation.zoneY.set(600);
+    for (let index = 0; index < 10; index++) {
+      locations.push([Math.floor(Math.random() * 600), Math.floor(Math.random() * 450)]) 
+    }
     numPeople = numPeopleSliderValue;
     persons.forEach(p => {
       p.$destroy();
@@ -32,7 +35,14 @@
       let randomLocations = shuffled.slice(0, 3);
       const person = new Person({
         target: container,
-        props: {isSick: false, routine:new PersonRoutine(randomLocations), speed: 10, transmissability: 0.01}
+        props: {
+          isSick: false, 
+          routine:new PersonRoutine(randomLocations), 
+          speed: 10, 
+          transmissability: 0.01, 
+          xMax: 600, 
+          yMax: 450, 
+          detectability: 0.01}
       });
       persons.push(person);
     }

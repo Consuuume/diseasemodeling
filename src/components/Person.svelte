@@ -1,5 +1,8 @@
 <script lang="ts">
+    export let xMax:number=800;
+    export let yMax:number=600;
     export let transmissability:number = 1;
+    export let detectability:number = 0;
     export let speed:number = 30;
     export let isSick:boolean = false;
     export let routine:PersonRoutine | undefined = undefined;
@@ -16,11 +19,12 @@
     }
     
     import { onDestroy, onMount } from 'svelte';
-    import * as d3 from 'd3';
     import { infectedCount } from '../stores/infectedCount.js';
     import { infectedData } from '../stores/infectedData.js';
 	import type PersonRoutine from '../classes/PersonRoutine.js';
+	import { quarantineZoneLocation } from '../stores/quarantineZoneLocation.ts';
 
+    const {zoneX, zoneY} = quarantineZoneLocation;
     let x = 0;
     let y = 0;
     const diseaseRadius:number = 20;
@@ -30,15 +34,28 @@
     let svg;
     let interval:any;
 
+    let detected = false;
+
     function setRandomPosition() {
-        x = Math.random() * 800;
-        y = Math.random() * 600;
+        x = Math.random() * xMax;
+        y = Math.random() * yMax;
     }
 
     function moveInBounds(moveX:number, moveY:number) {
         // Stay within bounds
-        x = Math.max(0, Math.min(800, moveX));
-        y = Math.max(0, Math.min(600, moveY)); 
+        x = Math.max(0, Math.min(detected ? $zoneX : xMax, moveX));
+        y = Math.max(0, Math.min(detected ? $zoneY : yMax, moveY)); 
+    }
+
+    function moveToQuarantine() {
+
+        let mag = Math.sqrt(Math.pow($zoneX, 2) + Math.pow($zoneY, 2));
+        if (mag === 0) return;
+        let normalized = [$zoneX / mag, $zoneY / mag];
+        
+        let moveVec:[number, number] = [+x + normalized[0] * speed, +y + normalized[1] * speed]
+        
+        moveInBounds(Math.round(moveVec[0]), Math.round(moveVec[1]));
     }
 
     function moveThroughRoutine(x:number, y:number) {
@@ -69,7 +86,10 @@
     }
 
     function updatePosition() {
-        if (routine && circleElement) {
+        if (detected) {
+            moveToQuarantine();
+        }
+        else if (routine && circleElement) {
             moveThroughRoutine(circleElement.getAttribute('cx'), circleElement.getAttribute('cy'));
         }
         else {
@@ -88,6 +108,10 @@
                     break;
                 }
             };
+        }
+
+        if (isSick && !detected && Math.random() < detectability) {
+            detected = true;
         }
     }
 
